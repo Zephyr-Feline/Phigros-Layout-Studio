@@ -1,0 +1,56 @@
+name: Windows CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  AVALONIA_TELEMETRY_OPTOUT: '1'
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  TESTINGPLATFORM_TELEMETRY_OPTOUT: '1'
+  DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE: 'true'
+  DOTNET_GENERATE_ASPNET_CERTIFICATE: 'false'
+
+jobs:
+  windows-release:
+    name: windows-release
+    runs-on: windows-2025
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: new_structure_project
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up exact SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: new_structure_project/global.json
+      - name: Restore locked dependencies
+        run: |
+          dotnet restore P1.slnx --locked-mode --configfile NuGet.Config -p:NuGetAudit=true -p:DisableTransitiveFrameworkReferenceDownloads=true
+          if ($LASTEXITCODE -ne 0) { throw 'Locked restore failed.' }
+      - name: Release build and required automated tests
+        run: ./scripts/Test-PublicSource.ps1 -OutputRoot (Join-Path $env:RUNNER_TEMP 'pls-ci')
+      - name: Write result summary
+        if: always()
+        run: |
+          $report = Join-Path $env:RUNNER_TEMP 'pls-ci/public-test-summary.json'
+          if (Test-Path -LiteralPath $report) {
+            '```json' | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
+            Get-Content -LiteralPath $report | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
+            '```' | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
+          }

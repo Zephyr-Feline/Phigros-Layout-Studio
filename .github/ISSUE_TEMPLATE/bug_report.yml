@@ -1,0 +1,39 @@
+name: 问题反馈
+description: 报告可复现的界面、工程或导出问题；安全问题请按 SECURITY.md 私密报告。
+title: "[问题] "
+body:
+  - type: markdown
+    attributes:
+      value: "请勿上传凭据、私人资料、无权公开的曲绘、字体或用户工程。安全漏洞请使用 Security → Report a vulnerability。"
+  - type: input
+    id: version
+    attributes:
+      label: 产品及来源
+      description: 产品版本、下载来源、ZIP SHA-256；自行构建请提供提交号。
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 环境
+      description: Windows 版本 / build、x64 或其他架构、分辨率、缩放、多屏或远程桌面、输入法。
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 复现步骤
+      description: 最短操作步骤，并说明发生在导入、编辑、保存、重开还是导出阶段。
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: 预期结果与实际结果
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostic
+    attributes:
+      label: 错误文字或最小示例
+      description: 可选；附加内容前先去除个人信息、本机私人路径和受限素材。

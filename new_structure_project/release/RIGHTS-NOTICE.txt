@@ -1,0 +1,18 @@
+Phigros Layout Studio 1.0
+Phigros 曲目排版工作室（PLS）
+Copyright © 2026 Mizuhime. All rights reserved.
+
+The rightsholder has chosen not to apply MIT, GPL, Apache-2.0 or another
+open-source license to the project-authored source code or binaries.
+
+No permission is granted by this file to modify, rebrand, repackage or
+redistribute the project-authored code or binaries. Separate authorization
+from the rightsholder is required for those activities. The rightsholder may
+publish additional distribution terms with an approved release.
+
+This reservation does not alter any rights granted by the licenses of the
+third-party components or embedded fonts. Their notices and license texts are
+provided under THIRD-PARTY-NOTICES.txt and the notices directory.
+
+This package does not include the separately developed third-party Phigros
+Preview Generator, game artwork, user artwork or user fonts.

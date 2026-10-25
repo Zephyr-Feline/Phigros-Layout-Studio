@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Windows-only codec boundary (DEC-014). The in-box Windows imaging stack is used instead
+         of a third-party image package, so this project targets the Windows desktop framework. -->
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Editor.Core/Editor.Core.csproj" />
+    <ProjectReference Include="../Editor.Rendering/Editor.Rendering.csproj" />
+  </ItemGroup>
+</Project>
