@@ -139,6 +139,7 @@ try {
             Require ($checks -ge 483) 'Free-layout checks must not be silently omitted.'
             $summary.FreeLayout = @{ Checks = $checks }
         }
+        Write-Host "Compatibility $mode PASS: $checks checks."
     }
     $settings = Join-Path $output 'tests.runsettings'
     $escaped = [Security.SecurityElement]::Escape($output)
@@ -159,6 +160,7 @@ try {
         [int]$counts.total -eq $results.Count -and [int]$counts.executed -eq $results.Count -and
         [int]$counts.passed -eq $results.Count -and [int]$counts.failed -eq 0 -and
         [int]$counts.notExecuted -eq 0 -and $summary.RequiredTests.NonPassingResults -eq 0) 'Every required test must execute and pass; skipped tests fail the gate.'
+    Write-Host "Required tests PASS: $($summary.RequiredTests.Passed) executed; zero failed or skipped."
 
     $assembly = Join-Path $projectRoot 'src/Editor.Desktop/bin/Release/net10.0-windows/Editor.Desktop.dll'
     $matrixRoot = Join-Path $output 'compatibility-matrix'
