@@ -1,0 +1,60 @@
+Phigros Layout Studio 1.0 - Third-Party Notices
+
+This package contains third-party software and embedded font software. The
+complete applicable texts are provided in this notices directory. Package
+license metadata is not substituted for the upstream license text.
+
+Avalonia 12.1.3 (Avalonia, Avalonia.Desktop, Avalonia.Fonts.Inter,
+Avalonia.FreeDesktop, Avalonia.FreeDesktop.AtSpi, Avalonia.HarfBuzz,
+Avalonia.Headless, Avalonia.Native, Avalonia.Remote.Protocol, Avalonia.Skia,
+Avalonia.Themes.Fluent, Avalonia.Win32 and Avalonia.X11)
+Copyright (c) the Avalonia project contributors.
+License: MIT. Source: https://github.com/AvaloniaUI/Avalonia
+Reviewed source revision: 8eeda4f6f546165b3f72e63c9f42247abb306905
+License text: notices/Avalonia-LICENSE.md
+
+Avalonia.Angle.Windows.Natives 2.1.27548.20260419
+Source: https://github.com/AvaloniaUI/angle
+Reviewed source revision: 1c89805903c1482166356d3b950d474973180e61
+License text: notices/ANGLE-LICENSE.txt
+
+HarfBuzzSharp 8.3.1.3 and HarfBuzzSharp.NativeAssets.Win32 8.3.1.3
+Copyright (c) Microsoft Corporation.
+License: MIT. Native-component notices are provided separately.
+Reviewed source revision: 2888c737ad016d584c74525e2d35db5097ea8576
+License text: notices/HarfBuzzSharp-LICENSE.txt
+Additional notices: notices/HarfBuzzSharp-THIRD-PARTY-NOTICES.txt
+
+SkiaSharp 3.119.4 and SkiaSharp.NativeAssets.Win32 3.119.4
+Copyright (c) Microsoft Corporation.
+License: MIT. Native-component notices are provided separately.
+Reviewed source revision: f568ac94dd768ef9a2f593537cfde2dd0d348ef5
+License text: notices/SkiaSharp-LICENSE.txt
+Additional notices: notices/SkiaSharp-THIRD-PARTY-NOTICES.txt
+
+MicroCom.Runtime 0.11.6
+Copyright (c) the MicroCom project contributors.
+License: MIT. Source: https://github.com/kekekeks/MicroCom
+Reviewed source revision: 76785efcafd91b5902fd19dd11145f6dd655b7b4
+License text: notices/MicroCom-LICENSE.txt
+
+Tmds.DBus.Protocol 0.94.1
+Copyright (c) the Tmds.DBus project contributors.
+License text: notices/Tmds.DBus-COPYING.txt
+Reviewed source revision: b4a7fed0b878f74cb54f7cca84d2889af4e596ba
+
+Inter 3.019 font software embedded by Avalonia.Fonts.Inter
+Copyright 2020 The Inter Project Authors (https://github.com/rsms/inter)
+License: SIL Open Font License 1.1.
+Reviewed font revision: 0a5106e0b
+License text: notices/Inter-OFL-1.1.txt
+
+Microsoft .NET and Windows Desktop runtime 10.0.13
+The self-contained win-x64 package includes Microsoft.NETCore.App and
+Microsoft.WindowsDesktop.App runtime files.
+License texts: notices/DOTNET-RUNTIME-LICENSE.txt and
+notices/WINDOWS-DESKTOP-LICENSE.txt
+Additional notices: notices/DOTNET-RUNTIME-THIRD-PARTY-NOTICES.txt
+
+The package does not grant any right to game artwork, user-imported images,
+third-party fonts, or the separate Phigros Preview Generator executable.

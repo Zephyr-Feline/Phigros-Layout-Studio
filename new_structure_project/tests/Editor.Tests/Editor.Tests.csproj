@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- The suite decodes/renders real images, so it targets Windows like the shipping editor
+         (DEC-014: TIFF decoding uses the in-box Windows imaging stack). -->
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsTestProject>true</IsTestProject>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Headless" Version="12.1.3" />
+    <PackageReference Include="Avalonia.Skia" Version="12.1.3" />
+    <PackageReference Include="NUnit" Version="4.6.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="6.3.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
+    <ProjectReference Include="../../src/Editor.Core/Editor.Core.csproj" />
+    <ProjectReference Include="../../src/Editor.Application/Editor.Application.csproj" />
+    <ProjectReference Include="../../src/Editor.Formats/Editor.Formats.csproj" />
+    <ProjectReference Include="../../src/Editor.Rendering/Editor.Rendering.csproj" />
+    <ProjectReference Include="../../src/Editor.Imaging.Windows/Editor.Imaging.Windows.csproj" />
+    <ProjectReference Include="../../src/Editor.Desktop/Editor.Desktop.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "editor.core": {
+        "type": "Project"
+      },
+      "editor.formats": {
+        "type": "Project",
+        "dependencies": {
+          "Editor.Core": "[1.0.0, )"
+        }
+      }
+    }
+  }
+}

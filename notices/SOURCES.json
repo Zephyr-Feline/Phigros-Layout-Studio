@@ -1,0 +1,62 @@
+{
+  "EvidenceVersion": 1,
+  "Product": "Phigros Layout Studio",
+  "Version": "1.0",
+  "Materials": [
+    {
+      "File": "notices/Avalonia-LICENSE.md",
+      "Sha256": "213814D306090074D234D760239FF0F67EB9B8D20EEFB4D5631BB39DBE0B769B"
+    },
+    {
+      "File": "notices/ANGLE-LICENSE.txt",
+      "Sha256": "54AFF7276217DF9F6B5181613999D208C9E40D2B1D51BF55217837E6871A4A63"
+    },
+    {
+      "File": "notices/HarfBuzzSharp-LICENSE.txt",
+      "Sha256": "89101E35A8C66FD4D6DFFC1763259161D35CB564C169714EC227A768C89F2938"
+    },
+    {
+      "File": "notices/HarfBuzzSharp-THIRD-PARTY-NOTICES.txt",
+      "Sha256": "21504C46C4C58AA64C1055BD2DCBC5F9A136B4B8C412ED3CC6740E22C5B127F5"
+    },
+    {
+      "File": "notices/SkiaSharp-LICENSE.txt",
+      "Sha256": "89101E35A8C66FD4D6DFFC1763259161D35CB564C169714EC227A768C89F2938"
+    },
+    {
+      "File": "notices/SkiaSharp-THIRD-PARTY-NOTICES.txt",
+      "Sha256": "21504C46C4C58AA64C1055BD2DCBC5F9A136B4B8C412ED3CC6740E22C5B127F5"
+    },
+    {
+      "File": "notices/MicroCom-LICENSE.txt",
+      "Sha256": "6EE769C9AC4DAC9ABB16B98B1341E9528FF9F4AB685481410D3376D14148F3A9"
+    },
+    {
+      "File": "notices/Tmds.DBus-COPYING.txt",
+      "Sha256": "ACA3B49277ABCC7886CCB2F115603A9F5B15FC3F96019A10C00F2974098B210C"
+    },
+    {
+      "File": "notices/Inter-OFL-1.1.txt",
+      "Sha256": "4D7D9C95E7D7F2F0EBF76D5E0B344826B74E903A34028EE18AB54BB639E45906"
+    },
+    {
+      "File": "notices/DOTNET-RUNTIME-LICENSE.txt",
+      "Sha256": "D7A68596AB69B06F51CA278A6545148E4269A9381C26D597C13DF5D88E08CF5B"
+    },
+    {
+      "File": "notices/DOTNET-RUNTIME-THIRD-PARTY-NOTICES.txt",
+      "Sha256": "6D15E10A101C6BFFF2AB4429ED061BF76C456FC4B23AD6B03E0D0F8377148A21"
+    },
+    {
+      "File": "notices/WINDOWS-DESKTOP-LICENSE.txt",
+      "Sha256": "A89886665765362EB77E0F8E26602C924520041D1711B2EEDC136434FE4D01AB"
+    }
+  ],
+  "AvaloniaSource": "https://github.com/AvaloniaUI/Avalonia/tree/8eeda4f6f546165b3f72e63c9f42247abb306905",
+  "InterSource": "https://github.com/rsms/inter/tree/0a5106e0b",
+  "AngleSource": "https://github.com/AvaloniaUI/angle/tree/1c89805903c1482166356d3b950d474973180e61",
+  "HarfBuzzSource": "https://github.com/mono/SkiaSharp/tree/2888c737ad016d584c74525e2d35db5097ea8576",
+  "SkiaSharpSource": "https://github.com/mono/SkiaSharp/tree/f568ac94dd768ef9a2f593537cfde2dd0d348ef5",
+  "MicroComSource": "https://github.com/kekekeks/MicroCom/tree/76785efcafd91b5902fd19dd11145f6dd655b7b4",
+  "TmdsSource": "https://github.com/tmds/Tmds.DBus/tree/b4a7fed0b878f74cb54f7cca84d2889af4e596ba"
+}

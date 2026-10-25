@@ -1,0 +1,16 @@
+name: 功能建议
+description: 描述希望完成的任务与当前遇到的困难。
+title: "[建议] "
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: 希望完成的任务
+      description: 描述具体使用场景、当前步骤及遇到的阻碍。
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: 建议的行为
+      description: 可选；请勿附加无权公开的曲绘、字体、代码或私人资料。
