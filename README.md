@@ -56,4 +56,4 @@ Copyright © 2026 Mizuhime. All rights reserved.
 
 第三方组件和嵌入字体适用各自许可证，自研权利声明不改变这些许可证已经授予的权利。[第三方归属](THIRD-PARTY-NOTICES.txt)、[许可原文](notices/)及[来源索引](notices/SOURCES.json)随源码和发行包提供。
 
-本项目不附带第三方 Phigros Preview Generator、游戏曲绘、用户图片或用户字体。请只导入有权使用的图片、文字和字体。软件内置的第三方 Inter 字体由 `Avalonia.Fonts.Inter` 提供，适用对应 SIL OFL；不能将“不附带用户字体”理解为“不含任何字体”。
+本项目不附带游戏曲绘、用户图片或用户字体。请只导入有权使用的图片、文字和字体。软件内置的 Inter 字体由 `Avalonia.Fonts.Inter` 提供，适用对应 SIL OFL；不能将“不附带用户字体”理解为“不含任何字体”。

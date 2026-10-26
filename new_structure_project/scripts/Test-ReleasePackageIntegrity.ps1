@@ -214,6 +214,30 @@ try {
         $report = Get-Content -LiteralPath (Join-Path $root 'release-verification.json') -Raw | ConvertFrom-Json
         Check ($failed -and $report.Status -eq 'FAILED' -and -not $report.RuntimeAttempted) 'Invalid metadata allowed application startup.'
     }
+    Test-Case 'an unapproved executable name is rejected even with a consistent catalog' {
+        $root = New-Fixture 'unapproved-executable'
+        $release = Join-Path $root 'release'
+        Put-Json (Join-Path $release 'build-evidence.json') @{
+            SourceManifestSha256 = ('A' * 64); CandidateStatus = 'RELEASE_CANDIDATE'
+            Release = @{ Product = 'Phigros Layout Studio'; Version = '1.0'; PublicationApproval = 'PENDING' }
+        }
+        [IO.File]::WriteAllText((Join-Path $release 'unexpected-helper.exe'), 'text fixture only')
+        $catalog = Read-Catalog $root
+        foreach ($file in @('build-evidence.json', 'unexpected-helper.exe')) {
+            $path = Join-Path $release $file
+            $catalog.Files += @{ Path = $file; Length = (Get-Item -LiteralPath $path).Length
+                Sha256 = (Get-FileHash -LiteralPath $path).Hash }
+            Copy-Item -LiteralPath $path -Destination (Join-Path $root "extracted/$file")
+        }
+        $catalog.FileCount = $catalog.Files.Count
+        Put-Json (Join-Path $release 'candidate-files.json') $catalog
+        Copy-Item -LiteralPath (Join-Path $release 'candidate-files.json') -Destination (Join-Path $root 'extracted/candidate-files.json')
+        Write-Archive $root
+        try { & $verifyScript -AssemblyRoot $root | Out-Null } catch { }
+        $report = Get-Content -LiteralPath (Join-Path $root 'release-verification.json') -Raw | ConvertFrom-Json
+        Check ($report.Status -eq 'FAILED' -and -not $report.RuntimeAttempted) 'Unapproved executable allowed application startup.'
+        Check (($report.Errors -join ' ') -match 'forbidden release payload') 'Executable allowlist was not enforced.'
+    }
     foreach ($approvedMode in @($false, $true)) {
         Test-Case "publication status mismatch is rejected before startup (approved mode=$approvedMode)" {
             $root = New-Fixture ("publication-mode-" + $approvedMode)

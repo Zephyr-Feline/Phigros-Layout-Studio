@@ -56,5 +56,5 @@ License texts: notices/DOTNET-RUNTIME-LICENSE.txt and
 notices/WINDOWS-DESKTOP-LICENSE.txt
 Additional notices: notices/DOTNET-RUNTIME-THIRD-PARTY-NOTICES.txt
 
-The package does not grant any right to game artwork, user-imported images,
-third-party fonts, or the separate Phigros Preview Generator executable.
+The package does not grant any right to game artwork, user-imported images
+or user-supplied fonts.

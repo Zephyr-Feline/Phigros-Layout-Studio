@@ -8,7 +8,7 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <Product>Phigros Layout Studio</Product>
     <AssemblyTitle>Phigros Layout Studio</AssemblyTitle>
-    <Description>Phigros 曲目排版工作室（PLS）：独立曲目预览排版编辑器</Description>
+    <Description>Phigros 曲目排版工作室（PLS）：曲目预览排版编辑器</Description>
     <Company>Mizuhime</Company>
     <Copyright>Copyright © 2026 Mizuhime. All rights reserved.</Copyright>
     <Version>1.0.0</Version>

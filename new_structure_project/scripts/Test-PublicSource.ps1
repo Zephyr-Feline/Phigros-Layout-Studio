@@ -92,7 +92,7 @@ try {
     Invoke-Logged $dotnet @('build', 'P1.slnx', '-c', 'Release', '--no-restore', '--no-incremental', '-warnaserror', '-p:UseSharedCompilation=false') 'release-build.log'
     $legacy = Join-Path $output 'compatibility-reference'
     New-Item -ItemType Directory -Path (Join-Path $legacy 'EnhancerSource') | Out-Null
-    $legacyExe = Join-Path $legacy 'Phigros Preview Enhancer.exe'
+    $legacyExe = Join-Path $legacy 'LayoutCompatibility.Reference.exe'
     $legacySource = Join-Path $repositoryRoot 'EnhancerSource'
     $compiler = Join-Path $env:WINDIR 'Microsoft.NET/Framework64/v4.0.30319/csc.exe'
     Require (Test-Path -LiteralPath $compiler -PathType Leaf) 'The installed .NET Framework compiler is required.'

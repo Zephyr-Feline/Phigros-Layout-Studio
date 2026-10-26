@@ -58,7 +58,8 @@ try {
     Require ([IO.File]::ReadAllText((Join-Path $release 'README.txt')).StartsWith('Phigros Layout Studio 1.0')) 'release README product name is wrong'
     $forbidden = @($catalog.Files | Where-Object {
         $_.Path -match '(^|/)(IMAGE|FONT)(/|$)' -or
-        [IO.Path]::GetFileName($_.Path) -eq 'Phigros Preview Generator.exe' -or
+        ([IO.Path]::GetExtension($_.Path) -ieq '.exe' -and
+            [IO.Path]::GetFileName($_.Path) -notin @('Editor.Desktop.exe', 'createdump.exe')) -or
         $_.Path -match '\.(phipreview|phifree|png|jpe?g|ttf|otf|pdb)$'
     })
     Require ($forbidden.Count -eq 0) ('forbidden release payload: ' + (($forbidden | ForEach-Object Path) -join ', '))

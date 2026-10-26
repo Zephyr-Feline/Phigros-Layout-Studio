@@ -14,5 +14,4 @@ This reservation does not alter any rights granted by the licenses of the
 third-party components or embedded fonts. Their notices and license texts are
 provided under THIRD-PARTY-NOTICES.txt and the notices directory.
 
-This package does not include the separately developed third-party Phigros
-Preview Generator, game artwork, user artwork or user fonts.
+This package does not include game artwork, user artwork or user fonts.

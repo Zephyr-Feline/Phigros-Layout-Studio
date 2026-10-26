@@ -181,7 +181,7 @@ $files = @(Get-ChildItem -LiteralPath $publishPath -Recurse -File)
 $forbidden = @($files | Where-Object {
     $relative = [IO.Path]::GetRelativePath($publishPath, $_.FullName)
     $relative -match '(^|[\\/])(IMAGE|FONT)([\\/]|$)' -or
-    $_.Name -eq 'Phigros Preview Generator.exe' -or
+    ($_.Extension -ieq '.exe' -and $_.Name -notin @('Editor.Desktop.exe', 'createdump.exe')) -or
     $_.Name -match '\.(phipreview|phifree|png|jpe?g|ttf|otf|pdb)$'
 })
 if ($forbidden.Count -ne 0) {

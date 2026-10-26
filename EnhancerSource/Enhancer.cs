@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -71,7 +70,7 @@ namespace PhigrosEnhancer
             if (p.Version == CurrentVersion) return;
             if (p.Version > CurrentVersion)
                 throw new InvalidDataException("该工程由更新版本的软件创建（工程格式 V" + p.Version +
-                    "，本程序支持到 V" + CurrentVersion + "）。请使用更新版本的 Phigros 曲目预览增强版打开。");
+                    "，本程序支持到 V" + CurrentVersion + "）。请使用支持该工程格式的软件打开。");
             // No pre-V1 .phipreview was ever written; add explicit V1 -> Vn steps here.
             throw new InvalidDataException("不支持的旧工程格式（V" + p.Version + "，本程序支持 V" + CurrentVersion + "）。");
         }
@@ -287,27 +286,26 @@ namespace PhigrosEnhancer
 
         public MainForm(string initial)
         {
-            Text = "Phigros 曲目预览 · 难度与谱师增强版";
+            Text = "布局兼容参考工具";
             Size = new Size(1420, 900); MinimumSize = new Size(1060, 740); StartPosition = FormStartPosition.CenterScreen;
             Font = new Font("Microsoft YaHei UI", 9); BackColor = Color.FromArgb(239,242,247); KeyPreview = true;
             // 96 DPI is the design baseline of the hand-written pixel layout below.
             AutoScaleDimensions = new SizeF(96F, 96F); AutoScaleMode = AutoScaleMode.Dpi;
             var top = new FlowLayoutPanel { Dock=DockStyle.Top, Height=60, Padding=new Padding(10), WrapContents=true, BackColor=Color.White };
             top.Controls.Add(Button("自由排版 / 五点布局", delegate { new FreeLayoutForm().Show(); }, 180));
-            top.Controls.Add(Button("启动原生成器", delegate { LaunchOriginal(); }, 135));
             top.Controls.Add(Button("导入底图", delegate { OpenImage(); }, 105));
             top.Controls.Add(Button("打开工程", delegate { OpenProject(); }, 105));
             top.Controls.Add(Button("保存工程", delegate { SaveProject(); }, 105));
             top.Controls.Add(Button("导出 PNG", delegate { Export(false); }, 120));
             top.Controls.Add(Button("导出透明标注", delegate { Export(true); }, 140));
-            watch.Text="自动接收原程序导出"; watch.AutoSize=true; watch.Margin=new Padding(12,11,0,0); watch.Checked=true;
+            watch.Text="自动载入新图片"; watch.AutoSize=true; watch.Margin=new Padding(12,11,0,0); watch.Checked=true;
             top.Controls.Add(watch);
             var right = new Panel { Dock=DockStyle.Right, Width=318, AutoScroll=true, Padding=new Padding(16), BackColor=Color.White };
             var controls = new TableLayoutPanel { Dock=DockStyle.Top, AutoSize=true, ColumnCount=1, RowCount=0, Width=280 };
             controls.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,100)); right.Controls.Add(controls);
             AddRow(controls, new Label {Text="难度 / 谱师",Font=new Font(Font.FontFamily,16,FontStyle.Bold),Height=40,Dock=DockStyle.Top});
             AddRow(controls, new Label { Text="模板位置", Height=24 });
-            layout.Items.AddRange(new object[] { "原版三曲模板", "六曲模板（2 × 3）", "单曲 / 自定义" }); layout.DropDownStyle=ComboBoxStyle.DropDownList; layout.SelectedIndex=0;
+            layout.Items.AddRange(new object[] { "三曲模板", "六曲模板（2 × 3）", "单曲 / 自定义" }); layout.DropDownStyle=ComboBoxStyle.DropDownList; layout.SelectedIndex=0;
             AddRow(controls, layout); AddRow(controls, Button("应用模板位置", delegate { ApplyPreset(); }, 270));
             tracks.Height=112; tracks.IntegralHeight=false; tracks.SelectedIndexChanged += delegate { FillEditor(); preview.Invalidate(); }; AddRow(controls, tracks);
             var pair = new FlowLayoutPanel {Height=40,WrapContents=false,Dock=DockStyle.Top};
@@ -350,7 +348,7 @@ namespace PhigrosEnhancer
             KeyDown+=Shortcuts;FormClosing+=OnEditorClosing;
             SnapshotFiles();timer.Interval=1000;timer.Tick+=WatchTick;timer.Start();
             project.Labels=Renderer.Preset(0);RefreshTrackList(0);
-            SetStatus("先导入原生成器导出的图片，或直接将图片拖入此窗口。");
+            SetStatus("请导入图片，或直接将图片拖入此窗口。");
             if(!string.IsNullOrEmpty(initial))Shown+=delegate{TryOpen(initial);};
         }
         static Button Button(string title, Action action, int width)
@@ -364,7 +362,7 @@ namespace PhigrosEnhancer
         void SetStatus(string text){status.Text=text;}
         void Error(Exception ex){MessageBox.Show(this,ex.GetBaseException().Message,"操作未完成",MessageBoxButtons.OK,MessageBoxIcon.Warning);}
         void Remember(){undo.Push(project.Copy());redo.Clear();if(undo.Count>80){var saved=undo.Take(60).Reverse().ToArray();undo.Clear();foreach(var p in saved)undo.Push(p);}}
-        void Changed(){dirty=true;preview.Invalidate();Text="Phigros 曲目预览 · 难度与谱师增强版 *";}
+        void Changed(){dirty=true;preview.Invalidate();Text="布局兼容参考工具 *";}
         void RefreshTrackList(int index)
         {filling=true;tracks.BeginUpdate();tracks.Items.Clear();foreach(var c in project.Labels)tracks.Items.Add(c.ToString());tracks.EndUpdate();tracks.SelectedIndex=tracks.Items.Count==0?-1:Math.Min(Math.Max(index,0),tracks.Items.Count-1);filling=false;FillEditor();preview.Invalidate();}
         void FillEditor()
@@ -397,7 +395,7 @@ namespace PhigrosEnhancer
         void PaintPreview(object sender,PaintEventArgs e)
         {
             if(background==null)
-            {using(var font=new Font(Font.FontFamily,18))using(var brush=new SolidBrush(Color.FromArgb(183,195,213)))e.Graphics.DrawString("将预览图片拖到这里\n\n或点击「启动原生成器」开始制作",font,brush,new RectangleF(45,preview.Height/2-65,preview.Width-90,160));imageRect=RectangleF.Empty;previewTransform=null;return;}
+            {using(var font=new Font(Font.FontFamily,18))using(var brush=new SolidBrush(Color.FromArgb(183,195,213)))e.Graphics.DrawString("将图片拖到这里\n\n或点击「导入底图」开始制作",font,brush,new RectangleF(45,preview.Height/2-65,preview.Width-90,160));imageRect=RectangleF.Empty;previewTransform=null;return;}
             float ratio=Math.Min((preview.Width-36f)/background.Width,(preview.Height-36f)/background.Height);
             imageRect=new RectangleF((preview.Width-background.Width*ratio)/2,(preview.Height-background.Height*ratio)/2,background.Width*ratio,background.Height*ratio);
             previewTransform=new LogicalViewportTransform(ClassicGeometry.ReferenceWidth,ClassicGeometry.ReferenceHeight,imageRect);
@@ -483,7 +481,7 @@ namespace PhigrosEnhancer
             var next=Project.Read(path);Bitmap img=Renderer.Decode(next.Background);
             if(!CanDiscard()){img.Dispose();return;}
             if(background!=null)background.Dispose();background=img;project=next;ClampLabels();inputPath="";undo.Clear();redo.Clear();dirty=false;RefreshTrackList(0);
-            Text="Phigros 曲目预览 · 难度与谱师增强版";SetStatus("已打开工程："+Path.GetFileName(path));
+            Text="布局兼容参考工具";SetStatus("已打开工程："+Path.GetFileName(path));
         }
         bool SaveProject()
         {
@@ -491,7 +489,7 @@ namespace PhigrosEnhancer
             using(var d=new SaveFileDialog{Filter="标注工程|*.phipreview",FileName=SafeName(project.SourceName)+"_标注.phipreview",InitialDirectory=root})
             {
                 if(d.ShowDialog(this)!=DialogResult.OK)return false;
-                try{project.Save(d.FileName);dirty=false;Text="Phigros 曲目预览 · 难度与谱师增强版";SetStatus("工程已保存："+d.FileName);return true;}catch(Exception ex){Error(ex);return false;}
+                try{project.Save(d.FileName);dirty=false;Text="布局兼容参考工具";SetStatus("工程已保存："+d.FileName);return true;}catch(Exception ex){Error(ex);return false;}
             }
         }
         static string SafeName(string name){return string.Concat((name??"预览").Select(c=>Path.GetInvalidFileNameChars().Contains(c)?'_':c));}
@@ -516,11 +514,6 @@ namespace PhigrosEnhancer
                 catch(Exception ex){Error(ex);}
             }
         }
-        void LaunchOriginal()
-        {
-            try {Process.Start(new ProcessStartInfo{FileName=Path.Combine(root,"Phigros Preview Generator.exe"),WorkingDirectory=root,UseShellExecute=true});SetStatus("在原生成器中按 Ctrl+S 导出；新 PNG 会自动载入此窗口。");}
-            catch(Exception ex){Error(ex);}
-        }
         static string FileStamp(string path){var f=new FileInfo(path);return f.Length+":"+f.LastWriteTimeUtc.Ticks;}
         void SnapshotFiles(){foreach(var p in Directory.GetFiles(root,"*.png"))try{observed[p]=FileStamp(p);}catch(IOException){}}
         void WatchTick(object sender,EventArgs e)
@@ -536,7 +529,7 @@ namespace PhigrosEnhancer
                 byte[] bytes;using(var stream=new FileStream(changed,FileMode.Open,FileAccess.Read,FileShare.None))using(var ms=new MemoryStream()){stream.CopyTo(ms);bytes=ms.ToArray();}
                 using(var image=Renderer.Decode(bytes)){}
                 TryOpen(changed);SnapshotFiles();pendingPath=null;
-                SetStatus("已自动接收原生成器导出："+Path.GetFileName(changed)+"；当前难度和谱师设置已保留。");
+                SetStatus("已自动载入图片："+Path.GetFileName(changed)+"；当前难度和谱师设置已保留。");
             }
             catch(IOException){}catch(ArgumentException){}catch(ExternalException){}catch(InvalidDataException){}
         }
