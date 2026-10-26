@@ -2,7 +2,7 @@
 
 本指南对应首个公开版本 **Phigros Layout Studio 1.0**（Phigros 曲目排版工作室，简称 PLS）。内容覆盖安装、画布操作、歌曲卡片制作、图层与文字编辑、背景、模板、工程保存和 PNG 输出。
 
-当前材料用于发布准备。正式版本、下载地址与 SHA-256 以审核后的 Release 为准；反馈使用本仓库 Issues，安全问题按 [SECURITY.md](../../SECURITY.md) 私密报告。支持范围与尚未验证的项目见 [支持与验证边界](SUPPORT.md)。
+正式版本、下载地址与 SHA-256 见 [1.0 发行页](https://github.com/Zephyr-Feline/Phigros-Layout-Studio/releases/tag/v1.0.0)；反馈使用本仓库 Issues，安全问题按 [SECURITY.md](../../SECURITY.md) 私密报告。支持范围与尚未验证的项目见 [支持与验证边界](SUPPORT.md)。
 
 ## 目录
 

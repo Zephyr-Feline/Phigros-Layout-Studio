@@ -1,6 +1,7 @@
 param(
     [Parameter(Mandatory = $true)]
-    [string] $AssemblyRoot
+    [string] $AssemblyRoot,
+    [switch] $PublicationApproved
 )
 
 $ErrorActionPreference = 'Stop'
@@ -43,10 +44,17 @@ try {
 
     $build = Get-Content -LiteralPath (Join-Path $release 'build-evidence.json') -Raw | ConvertFrom-Json
     Require ($catalog.SourceManifestSha256 -eq $build.SourceManifestSha256) 'catalog and build source identities differ'
-    Require ($build.CandidateStatus -eq 'RELEASE_CANDIDATE') 'candidate status is not RELEASE_CANDIDATE'
+    $expectedStatus = if ($PublicationApproved) { 'RELEASE' } else { 'RELEASE_CANDIDATE' }
+    $expectedApproval = if ($PublicationApproved) { 'APPROVED' } else { 'PENDING' }
+    Require ($build.CandidateStatus -eq $expectedStatus) 'package status does not match the explicit verification mode'
     Require ($build.Release.Product -eq 'Phigros Layout Studio') 'release product identity is wrong'
     Require ($build.Release.Version -eq '1.0') 'release version is wrong'
-    Require ($build.Release.PublicationApproval -eq 'PENDING') 'publication approval must remain PENDING in this assembly'
+    Require ($build.Release.PublicationApproval -eq $expectedApproval) 'publication approval does not match the explicit verification mode'
+    if ($PublicationApproved) {
+        Require ($build.Acceptance.CleanMachine -eq 'WAIVED_BY_PUBLISHER') 'clean-machine waiver is not recorded accurately'
+        Require ($build.Acceptance.LegacyWriter -eq 'NOT_SUPPORTED') 'old-format write-back scope is not recorded accurately'
+        Require ($build.Acceptance.ProjectLicense -eq 'RIGHTS_RESERVED') 'first-party rights reservation is missing'
+    }
     Require ([IO.File]::ReadAllText((Join-Path $release 'README.txt')).StartsWith('Phigros Layout Studio 1.0')) 'release README product name is wrong'
     $forbidden = @($catalog.Files | Where-Object {
         $_.Path -match '(^|/)(IMAGE|FONT)(/|$)' -or
@@ -101,7 +109,7 @@ try {
 # Parse, I/O and integrity failures also produce a failed report. Never reuse an earlier PASS.
 $report = [ordered]@{
     Status = if ($errors.Count -eq 0) { 'PASS' } else { 'FAILED' }
-    Scope = 'RELEASE_CANDIDATE_PACKAGE_AND_RUNTIME'
+    Scope = if ($PublicationApproved) { 'RELEASE_PACKAGE_AND_RUNTIME' } else { 'RELEASE_CANDIDATE_PACKAGE_AND_RUNTIME' }
     Product = 'Phigros Layout Studio'
     Version = '1.0'
     SourceManifestSha256 = if ($null -ne $catalog) { $catalog.SourceManifestSha256 } else { $null }
@@ -110,7 +118,7 @@ $report = [ordered]@{
     ExecutableSha256 = if ($null -ne $integrity) { $integrity.ExecutableSha256 } else { $null }
     PublishedFiles = if ($null -ne $integrity) { $integrity.PublishedFiles } else { $null }
     RuntimeAttempted = $runtimeAttempted
-    PublicationApproval = 'PENDING'
+    PublicationApproval = if ($PublicationApproved) { 'APPROVED' } else { 'PENDING' }
     CleanMachine = 'NOT_ASSERTED'
     Errors = @($errors)
     CheckedUtc = [DateTime]::UtcNow.ToString('o')
