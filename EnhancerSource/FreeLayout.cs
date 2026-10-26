@@ -967,12 +967,23 @@ namespace PhigrosEnhancer
             var groupBefore=Targets().Select(l=>l.Copy()).ToList();
             float groupLeft=SelectionBounds(groupBefore).Left;
             int groupX=(int)(view.X+(groupArt.X+groupArt.Width/2f)*snapFit),groupY=(int)(view.Y+(groupArt.Y+groupArt.Height/2f)*snapFit);
+            // This case tests the canvas guide. Keep unrelated layers out of hit testing
+            // and the competing component-guide set, as in the single-layer case above.
+            var groupIds=new HashSet<string>(groupBefore.Select(l=>l.Id));
+            var groupParked=project.Layers.Where(l=>!groupIds.Contains(l.Id)).Select(l=>new{l,visible=l.Visible}).ToList();
+            foreach(var other in groupParked)other.l.Visible=false;
+            try
+            {
             Down(canvas,new MouseEventArgs(MouseButtons.Left,1,groupX,groupY,0));
+            check(Targets().Count==groupIds.Count&&Targets().All(l=>groupIds.Contains(l.Id)),"group canvas snap starts with the intended moving members");
             MovePointer(canvas,new MouseEventArgs(MouseButtons.Left,1,(int)(groupX+(groupLeft==5f?0f:-groupLeft+5f)*snapFit),groupY,0));
             check(Math.Abs(SelectionBounds(Targets()).Left)<1.5f,"group move snaps the whole selection bounds onto the canvas left edge");
+            check(activeVerticalGuide.HasValue&&activeVerticalGuide.Value==0f,"group canvas snap activates the x=0 guide");
             check(Targets().All(l=>Math.Abs((l.X-groupBefore.First(b=>b.Id==l.Id).X)-(groupArt.X-groupBefore.First(b=>b.Id==groupArt.Id).X))<.001f),
                 "group move keeps the relative layout inside the group");
             Up(canvas,new MouseEventArgs(MouseButtons.Left,1,groupX,groupY,0));
+            }
+            finally {foreach(var other in groupParked)other.l.Visible=other.visible;}
             ClearSnapGuides();
             // previewTransform may be null between a canvas resize / project swap and the next paint.
             using(var nullBitmap=new Bitmap(Math.Max(1,canvas.Width),Math.Max(1,canvas.Height)))

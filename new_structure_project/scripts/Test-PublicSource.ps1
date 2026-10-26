@@ -104,6 +104,43 @@ try {
     Invoke-Logged $compiler $arguments 'compatibility-reference-build.log'
     if ($BuildOnly) { $summary.Status = 'BUILD_ONLY'; return }
 
+    # Synthetic bitmap enables ALL classic interaction checks without copyrighted artwork.
+    Add-Type -AssemblyName System.Drawing
+    $classic = Join-Path $legacy 'classic'
+    New-Item -ItemType Directory -Path $classic | Out-Null
+    $bitmap = [Drawing.Bitmap]::new(1920, 1080)
+    $graphics = [Drawing.Graphics]::FromImage($bitmap)
+    try {
+        $graphics.Clear([Drawing.Color]::FromArgb(50, 65, 80))
+        $bitmap.Save((Join-Path $classic '参考底图.png'), [Drawing.Imaging.ImageFormat]::Png)
+    } finally { $graphics.Dispose(); $bitmap.Dispose() }
+    foreach ($mode in @('classic', 'free')) {
+        $flag = if ($mode -eq 'classic') { '--self-test' } else { '--free-test' }
+        $folder = Join-Path $legacy $mode
+        $process = Start-Process -FilePath $legacyExe -ArgumentList @($flag, ('"' + $folder + '"')) -WorkingDirectory $legacy -WindowStyle Hidden -Wait -PassThru
+        try {
+            if ($process.ExitCode -ne 0) {
+                $diagnostic = Join-Path $legacy 'EnhancerSource/last-error.txt'
+                if (Test-Path -LiteralPath $diagnostic -PathType Leaf) {
+                    Write-Host "Compatibility $mode failure details:"
+                    Get-Content -LiteralPath $diagnostic -Tail 60 -Encoding utf8 | Write-Host
+                }
+            }
+            Require ($process.ExitCode -eq 0) "Compatibility $mode self-test failed."
+        } finally { $process.Dispose() }
+        $resultFile = if ($mode -eq 'classic') { '测试结果.txt' } else { '自由排版测试结果.txt' }
+        $text = Get-Content -LiteralPath (Join-Path $folder $resultFile) -Raw -Encoding utf8
+        Require ($text -match '^PASS: ([1-9][0-9]*) checks') "Missing $mode checks."
+        $checks = [int]$Matches[1]
+        if ($mode -eq 'classic') {
+            Require ($checks -ge 317) 'Classic interaction checks must not be silently omitted.'
+            $summary.Classic = @{ Checks = $checks; ReferenceImage = 'SYNTHETIC_1920x1080' }
+        } else {
+            Require ($checks -ge 483) 'Free-layout checks must not be silently omitted.'
+            $summary.FreeLayout = @{ Checks = $checks }
+        }
+        Write-Host "Compatibility $mode PASS: $checks checks."
+    }
     $settings = Join-Path $output 'tests.runsettings'
     $escaped = [Security.SecurityElement]::Escape($output)
     "<RunSettings><NUnit><WorkDirectory>$escaped</WorkDirectory></NUnit></RunSettings>" |
@@ -123,34 +160,8 @@ try {
         [int]$counts.total -eq $results.Count -and [int]$counts.executed -eq $results.Count -and
         [int]$counts.passed -eq $results.Count -and [int]$counts.failed -eq 0 -and
         [int]$counts.notExecuted -eq 0 -and $summary.RequiredTests.NonPassingResults -eq 0) 'Every required test must execute and pass; skipped tests fail the gate.'
+    Write-Host "Required tests PASS: $($summary.RequiredTests.Passed) executed; zero failed or skipped."
 
-    # Synthetic bitmap enables ALL classic interaction checks without copyrighted artwork.
-    Add-Type -AssemblyName System.Drawing
-    $classic = Join-Path $legacy 'classic'
-    New-Item -ItemType Directory -Path $classic | Out-Null
-    $bitmap = [Drawing.Bitmap]::new(1920, 1080)
-    $graphics = [Drawing.Graphics]::FromImage($bitmap)
-    try {
-        $graphics.Clear([Drawing.Color]::FromArgb(50, 65, 80))
-        $bitmap.Save((Join-Path $classic '参考底图.png'), [Drawing.Imaging.ImageFormat]::Png)
-    } finally { $graphics.Dispose(); $bitmap.Dispose() }
-    foreach ($mode in @('classic', 'free')) {
-        $flag = if ($mode -eq 'classic') { '--self-test' } else { '--free-test' }
-        $folder = Join-Path $legacy $mode
-        $process = Start-Process -FilePath $legacyExe -ArgumentList @($flag, ('"' + $folder + '"')) -WorkingDirectory $legacy -WindowStyle Hidden -Wait -PassThru
-        try { Require ($process.ExitCode -eq 0) "Compatibility $mode self-test failed." } finally { $process.Dispose() }
-        $resultFile = if ($mode -eq 'classic') { '测试结果.txt' } else { '自由排版测试结果.txt' }
-        $text = Get-Content -LiteralPath (Join-Path $folder $resultFile) -Raw -Encoding utf8
-        Require ($text -match '^PASS: ([1-9][0-9]*) checks') "Missing $mode checks."
-        $checks = [int]$Matches[1]
-        if ($mode -eq 'classic') {
-            Require ($checks -ge 317) 'Classic interaction checks must not be silently omitted.'
-            $summary.Classic = @{ Checks = $checks; ReferenceImage = 'SYNTHETIC_1920x1080' }
-        } else {
-            Require ($checks -ge 483) 'Free-layout checks must not be silently omitted.'
-            $summary.FreeLayout = @{ Checks = $checks }
-        }
-    }
     $assembly = Join-Path $projectRoot 'src/Editor.Desktop/bin/Release/net10.0-windows/Editor.Desktop.dll'
     $matrixRoot = Join-Path $output 'compatibility-matrix'
     Invoke-Logged $dotnet @($assembly, '--compat-evidence', $matrixRoot, $legacyExe) 'compatibility-matrix.log'
