@@ -58,9 +58,11 @@ dotnet run --project ./src/Editor.Desktop/Editor.Desktop.csproj -c Release --no-
 
 ## Windows CI 与 CodeQL
 
-仓库准备了 `.github/workflows/windows-ci.yml` 和 `codeql.yml`。它们采用 `windows-2025`、固定 SDK、locked restore 和完整 Action commit SHA。Windows CI 执行以上公共自动化集合；CodeQL 使用手工构建覆盖编辑器和兼容 C# 实现。CodeQL 查询集为 `security-extended`。
+仓库已接入 `.github/workflows/windows-ci.yml` 和 `codeql.yml`。它们采用 `windows-2025`、固定 SDK、locked restore 和完整 Action commit SHA。Windows CI 执行以上公共自动化集合；CodeQL 使用手工构建覆盖编辑器和兼容 C# 实现。CodeQL 查询集为 `security-extended`。
 
-运行 CI 会在 GitHub 托管 runner 上下载 Action、SDK（若 runner 缺失）、锁定依赖及 CodeQL bundle/query 内容。本机准备这些文件不代表已在 GitHub 实跑，更不代表扫描无告警。需在目标仓库确认构建、测试和 CodeQL 提取/上传成功，再按实际检查名配置 `main` 合并要求。
+运行 CI 会在 GitHub 托管 runner 上下载 Action、SDK（若 runner 缺失）、锁定依赖及 CodeQL bundle/query 内容。当前结果见 [Actions](https://github.com/Zephyr-Feline/Phigros-Layout-Studio/actions)；`main` 要求 `windows-release` 和 `csharp` 检查通过。既有成功记录不保证后续提交或所有依赖均无问题。
+
+发行组装与验证脚本默认生成待审阅候选。发布者明确授权后，两步都使用 `-PublicationApproved` 才生成／验证正式发行状态；该参数不改变一方权利声明或第三方许可，也不将未测环境改为 PASS。构建时可设置进程级 `PathMap=<checkout>=/_/`，随后检查六个自研 DLL 的 CodeView 路径；正式包须绑定相应公共提交、完整材料及新哈希。
 
 CI 使用 `pull_request`，不使用 `pull_request_target`，不接入发布凭据。默认仅 `contents: read`，CodeQL job 仅额外申请上传扫描结果所需的 `security-events: write`；checkout 不保留凭据。不要为解决 fork PR 扫描失败而给不可信 PR 发布 token。CodeQL 配置和权限依据 [GitHub 官方 Action 文档](https://github.com/github/codeql-action/tree/9b3254085494b55a0f7c4c2b3d2d52cc712ce370)；构建模式参见 [官方编译语言文档](https://docs.github.com/en/code-security/reference/code-scanning/codeql/build-options-for-compiled-languages)。
 

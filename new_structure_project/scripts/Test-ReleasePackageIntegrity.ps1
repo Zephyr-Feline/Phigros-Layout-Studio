@@ -214,6 +214,33 @@ try {
         $report = Get-Content -LiteralPath (Join-Path $root 'release-verification.json') -Raw | ConvertFrom-Json
         Check ($failed -and $report.Status -eq 'FAILED' -and -not $report.RuntimeAttempted) 'Invalid metadata allowed application startup.'
     }
+    foreach ($approvedMode in @($false, $true)) {
+        Test-Case "publication status mismatch is rejected before startup (approved mode=$approvedMode)" {
+            $root = New-Fixture ("publication-mode-" + $approvedMode)
+            $release = Join-Path $root 'release'
+            $buildPath = Join-Path $release 'build-evidence.json'
+            Put-Json $buildPath @{
+                SourceManifestSha256 = ('A' * 64)
+                CandidateStatus = if ($approvedMode) { 'RELEASE_CANDIDATE' } else { 'RELEASE' }
+                Release = @{ Product = 'Phigros Layout Studio'; Version = '1.0'
+                    PublicationApproval = if ($approvedMode) { 'PENDING' } else { 'APPROVED' } }
+            }
+            $catalog = Read-Catalog $root
+            $catalog.Files += @{ Path = 'build-evidence.json'; Length = (Get-Item -LiteralPath $buildPath).Length
+                Sha256 = (Get-FileHash -LiteralPath $buildPath).Hash }
+            $catalog.FileCount = $catalog.Files.Count
+            Put-Json (Join-Path $release 'candidate-files.json') $catalog
+            foreach ($file in @('build-evidence.json', 'candidate-files.json')) {
+                Copy-Item -LiteralPath (Join-Path $release $file) -Destination (Join-Path $root "extracted/$file")
+            }
+            Write-Archive $root
+            $failed = $false
+            try { & $verifyScript -AssemblyRoot $root -PublicationApproved:$approvedMode | Out-Null } catch { $failed = $true }
+            $report = Get-Content -LiteralPath (Join-Path $root 'release-verification.json') -Raw | ConvertFrom-Json
+            Check ($failed -and -not $report.RuntimeAttempted) 'Publication mode mismatch allowed executable startup.'
+            Check (($report.Errors -join ' ') -match 'explicit verification mode') 'Publication status mismatch was not checked.'
+        }
+    }
 } catch { $testError = $_.Exception.Message }
 finally {
     $passed = @($results | Where-Object Status -eq 'PASS').Count

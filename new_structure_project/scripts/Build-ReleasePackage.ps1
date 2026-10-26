@@ -4,7 +4,8 @@ param(
     [Parameter(Mandatory = $true)]
     [string] $MaterialsRoot,
     [Parameter(Mandatory = $true)]
-    [string] $OutputRoot
+    [string] $OutputRoot,
+    [switch] $PublicationApproved
 )
 
 $ErrorActionPreference = 'Stop'
@@ -251,20 +252,53 @@ $bom | ConvertTo-Json -Depth 12 |
 
 $buildPath = Join-Path $release 'build-evidence.json'
 $build = Get-Content -LiteralPath $buildPath -Raw | ConvertFrom-Json -AsHashtable
-$build.CandidateStatus = 'RELEASE_CANDIDATE'
+$packageStatus = if ($PublicationApproved) { 'RELEASE' } else { 'RELEASE_CANDIDATE' }
+$approvalStatus = if ($PublicationApproved) { 'APPROVED' } else { 'PENDING' }
+$build.CandidateStatus = $packageStatus
+if ($PublicationApproved) {
+    $build.Acceptance = [ordered]@{
+        CleanMachine = 'WAIVED_BY_PUBLISHER'
+        WindowsHardware = 'LIMITED_SCOPE_EVIDENCE_REUSED'
+        ThirdPartyNotices = 'VERIFIED_FOR_PAYLOAD'
+        ProjectLicense = 'RIGHTS_RESERVED'
+        P3Visual = 'DOCUMENTED_CONVERSION_DIFFERENCES'
+        LegacyWriter = 'NOT_SUPPORTED'
+        ScreenReader = 'NOT_VERIFIED_OUTSIDE_CORE_ACCEPTANCE'
+    }
+}
 $build.Release = [ordered]@{
     Product = 'Phigros Layout Studio'
     Version = '1.0'
     Package = 'win-x64 self-contained portable ZIP'
     SupportedPlatform = 'Windows 11 25H2 x64'
     SupportedScaling = 'single display 100%, 125%, 150%, 200%'
-    PublicationApproval = 'PENDING'
-    Notes = 'Technical release candidate; publication, clean-machine and remaining physical sign-off are separate.'
+    PublicationApproval = $approvalStatus
+    Notes = if ($PublicationApproved) {
+        'Publisher-authorized release. Support, waived checks and unverified areas are documented; no blanket hardware or security guarantee.'
+    } else { 'Technical release candidate; publication and physical acceptance are separate.' }
 }
 $build | ConvertTo-Json -Depth 12 |
     Set-Content -LiteralPath $buildPath -Encoding utf8
 
-$releaseStatus = @'
+$releaseStatus = if ($PublicationApproved) { @'
+Status: RELEASE
+Product: Phigros Layout Studio
+Version: 1.0
+Architecture: Windows x64
+Runtime: self-contained .NET 10.0.13
+Publication approval: APPROVED
+
+Supported target: Windows 11 25H2 x64, single display 100/125/150/200%.
+Second clean Windows machine: waived by the publisher, not a tested PASS.
+Screen-reader speech: not separately verified, outside core acceptance.
+Mixed DPI, multiple displays and other platforms are outside support scope.
+Compatible inputs are read-only conversions with documented visual differences;
+there is no old-format write-back or pixel-identical rendering promise.
+
+First-party rights remain reserved under LICENSE-NOTICE.txt. Third-party
+notices and licenses remain applicable. The executable is not code-signed.
+Official release: https://github.com/Zephyr-Feline/Phigros-Layout-Studio/releases/tag/v1.0.0
+'@ } else { @'
 Status: RELEASE_CANDIDATE
 Product: Phigros Layout Studio
 Version: 1.0
@@ -276,7 +310,7 @@ This directory is technically assembled for final review. It is not evidence
 of a clean-machine pass, complete Chinese IME coverage, legal approval or
 permission to upload. The publisher must bind the final archive, checksums,
 support statement and approvals before publication.
-'@
+'@ }
 Set-Content -LiteralPath (Join-Path $release 'RELEASE-STATUS.txt') -Value $releaseStatus -Encoding utf8
 
 $forbidden = @(Get-ChildItem -LiteralPath $release -Recurse -File | Where-Object {
@@ -317,7 +351,7 @@ $archiveHash = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash
 $extracted = Join-Path $output 'extracted'
 [IO.Compression.ZipFile]::ExtractToDirectory($archive, $extracted)
 $summary = [ordered]@{
-    Status = 'RELEASE_CANDIDATE_ASSEMBLED'
+    Status = $packageStatus + '_ASSEMBLED'
     Product = 'Phigros Layout Studio'
     Version = '1.0'
     SourceManifestSha256 = $build.SourceManifestSha256
@@ -326,9 +360,9 @@ $summary = [ordered]@{
     ArchiveBytes = (Get-Item -LiteralPath $archive).Length
     ArchiveSha256 = $archiveHash
     ExecutableSha256 = (Get-FileHash -LiteralPath (Join-Path $extracted 'Editor.Desktop.exe') -Algorithm SHA256).Hash
-    PublicationApproval = 'PENDING'
+    PublicationApproval = $approvalStatus
 }
 $summary | ConvertTo-Json -Depth 6 |
     Set-Content -LiteralPath (Join-Path $output 'release-assembly-summary.json') -Encoding utf8
-Write-Host "RELEASE CANDIDATE ASSEMBLED: $archive"
+Write-Host "$packageStatus ASSEMBLED: $archive"
 Write-Host "SHA256: $archiveHash"

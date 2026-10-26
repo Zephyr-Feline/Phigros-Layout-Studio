@@ -1,6 +1,6 @@
 Phigros Layout Studio 1.0
 Phigros 曲目排版工作室（PLS）
-Windows 11 25H2 x64 发布候选
+Windows 11 25H2 x64 便携发行版
 
 1.0 是本产品的首个公开版本，用于制作 Phigros 曲目预览图。
 
@@ -10,9 +10,11 @@ Windows 11 25H2 x64 发布候选
 支持范围
 
 首发目标为 Windows 11 25H2 x64、单屏 100% / 125% / 150% / 200% 缩放。
-实际已验项目以随候选提供的验收记录为准，核心交互通过不等于完整硬件矩阵签收。
+已验范围与限制见发行页，核心交互通过不等于完整硬件矩阵签收。
 混合 DPI、多屏、其他 Windows 版本、ARM64、Linux 和 macOS 不在当前支持承诺内。
-发布者需在正式发布时提供下载来源、最终 ZIP 校验值及支持与反馈入口。
+官方发行与 SHA-256：https://github.com/Zephyr-Feline/Phigros-Layout-Studio/releases/tag/v1.0.0
+第二台干净 Windows 按发布者要求免测，不记为 PASS；实际读屏未专门签收。
+可识别的兼容输入仅作只读转换并另存 .ppgproj；可能有外观差异，不支持旧格式写回。
 
 建立第一份工程
 
@@ -60,7 +62,9 @@ TIFF 只处理受支持的经典 TIFF 首页；BigTIFF、畸形或超限数据�
 请提供版本、下载来源及 ZIP SHA-256、Windows build、分辨率/缩放/显示器配置、
 完整复现步骤与错误文字，并指出问题发生在导入、编辑、保存、重开还是导出阶段。
 提供最小工程或截图前，请自行检查隐私及素材使用权。
-正式反馈渠道由发布者在公开发行时提供。
+普通反馈：https://github.com/Zephyr-Feline/Phigros-Layout-Studio/issues
+安全问题：https://github.com/Zephyr-Feline/Phigros-Layout-Studio/security/advisories/new
+本包未进行代码签名；SHA-256 用于核对内容，不能单独认证发布者身份。
 
 自研代码权利见 LICENSE-NOTICE.txt；第三方归属见 THIRD-PARTY-NOTICES.txt。
-完整上游许可文本保存在 notices 文件夹。候选状态与公开批准情况见 RELEASE-STATUS.txt。
+完整上游许可文本保存在 notices 文件夹。发行状态及验证边界见 RELEASE-STATUS.txt。
