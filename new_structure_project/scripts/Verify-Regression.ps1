@@ -212,7 +212,7 @@ try {
     # Build from current V1 source without replacing the usable enhancer in the repository.
     $legacyRoot = Join-Path $outputRoot 'v1'
     New-Item -ItemType Directory -Path (Join-Path $legacyRoot 'EnhancerSource') | Out-Null
-    $legacyExe = Join-Path $legacyRoot 'Phigros Preview Enhancer.exe'
+    $legacyExe = Join-Path $legacyRoot 'LayoutCompatibility.Reference.exe'
     $compiler = Join-Path $env:WINDIR 'Microsoft.NET/Framework64/v4.0.30319/csc.exe'
     if (-not (Test-Path -LiteralPath $compiler)) { throw 'The installed .NET Framework C# compiler is required.' }
     $legacySource = Join-Path $repositoryRoot 'EnhancerSource'

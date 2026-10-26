@@ -68,7 +68,7 @@ try {
     Invoke-Evidence $dotnet @('build', 'P1.slnx', '-c', 'Release', '--no-restore', '-warnaserror') 'v2-build.log'
     $referenceRoot = Join-Path $outputRoot 'independent-v1'
     New-Item -ItemType Directory -Path $referenceRoot | Out-Null
-    $referenceExe = Join-Path $referenceRoot 'Phigros Preview Enhancer.exe'
+    $referenceExe = Join-Path $referenceRoot 'LayoutCompatibility.Reference.exe'
     $compiler = Join-Path $env:WINDIR 'Microsoft.NET/Framework64/v4.0.30319/csc.exe'
     if (-not (Test-Path -LiteralPath $compiler -PathType Leaf)) { throw 'Installed .NET Framework compiler is required.' }
     $legacy = Join-Path $repositoryRoot 'EnhancerSource'

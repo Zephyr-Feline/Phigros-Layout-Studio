@@ -34,6 +34,8 @@ public sealed class PublicProductIdentityTests
                     Is.EqualTo("Phigros Layout Studio"));
                 Assert.That(assembly.GetCustomAttribute<AssemblyTitleAttribute>()!.Title,
                     Is.EqualTo("Phigros Layout Studio"));
+                Assert.That(assembly.GetCustomAttribute<AssemblyDescriptionAttribute>()!.Description,
+                    Is.EqualTo("Phigros 曲目排版工作室（PLS）：曲目预览排版编辑器"));
                 Assert.That(assembly.GetName().Version, Is.EqualTo(new Version(1, 0, 0, 0)));
                 Assert.That(App.ProductVersion, Is.EqualTo("1.0.0"));
             });
@@ -76,7 +78,7 @@ public sealed class PublicProductIdentityTests
             window.Show();
             var texts = window.GetLogicalDescendants().OfType<TextBlock>()
                 .Select(block => block.Text).Where(text => text is not null).ToArray();
-            Assert.That(texts.Any(text => Regex.IsMatch(text!, @"\bV[12]\b|旧版|旧工程|Preview Enhancer")), Is.False);
+            Assert.That(texts.Any(text => Regex.IsMatch(text!, @"\bV[12]\b|旧版|旧工程|增强版")), Is.False);
             var imported = UiText.Translate("Imported source document sample. Save Project writes a new .ppgproj; the source file stays protected.");
             Assert.That(imported, Does.StartWith("文件已导入。").And.Contain("原文件受保护"));
             Assert.That(UiText.Translate("The file is not a recognised project document."), Does.Contain(".ppgproj"));

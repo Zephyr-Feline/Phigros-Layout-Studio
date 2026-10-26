@@ -149,8 +149,8 @@ License texts: notices/DOTNET-RUNTIME-LICENSE.txt and
 notices/WINDOWS-DESKTOP-LICENSE.txt
 Additional notices: notices/DOTNET-RUNTIME-THIRD-PARTY-NOTICES.txt
 
-The package does not grant any right to game artwork, user-imported images,
-third-party fonts, or the separate Phigros Preview Generator executable.
+The package does not grant any right to game artwork, user-imported images
+or user-supplied fonts.
 '@
 Set-Content -LiteralPath (Join-Path $release 'THIRD-PARTY-NOTICES.txt') -Value $thirdPartyNotice -Encoding utf8
 
@@ -316,7 +316,7 @@ Set-Content -LiteralPath (Join-Path $release 'RELEASE-STATUS.txt') -Value $relea
 $forbidden = @(Get-ChildItem -LiteralPath $release -Recurse -File | Where-Object {
     $relative = [IO.Path]::GetRelativePath($release, $_.FullName)
     $relative -match '(^|[\\/])(IMAGE|FONT)([\\/]|$)' -or
-    $_.Name -eq 'Phigros Preview Generator.exe' -or
+    ($_.Extension -ieq '.exe' -and $_.Name -notin @('Editor.Desktop.exe', 'createdump.exe')) -or
     $_.Name -match '\.(phipreview|phifree|png|jpe?g|ttf|otf|pdb)$'
 })
 if ($forbidden.Count -ne 0) {
