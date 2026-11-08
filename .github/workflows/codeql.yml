@@ -51,6 +51,6 @@ jobs:
       - name: Compile all first-party C# for extraction
         run: ./scripts/Test-PublicSource.ps1 -OutputRoot (Join-Path $env:RUNNER_TEMP 'pls-codeql-build') -BuildOnly
       - name: Analyze and upload results
-        uses: github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # same commit as init
+        uses: github/codeql-action/analyze@33d7b85da1a04171e211befe2c739303b9a4c066 # same commit as init
         with:
           category: /language:csharp
